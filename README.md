@@ -1,42 +1,36 @@
-# Youth Scrapbook AI Generator UI
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This is a React + TypeScript + Tailwind CSS implementation of the "Youth Scrapbook AI Generator" UI interface.
+## Getting Started
 
-## Features
+First, run the development server:
 
-- **Upload Page**: Clean, drag-and-drop style upload interface with pastoral aesthetics.
-- **Loading Page**: Animated loading state with healing messages.
-- **Editor Page**: 
-  - Drag-and-drop functionality for elements.
-  - Sidebar with tabs (Images, Decorations, Text, Doodles, Backgrounds).
-  - Canvas area for composition.
-- **Responsive Design**: Adapts to different screen sizes.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Tech Stack
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- React 19
-- TypeScript
-- Tailwind CSS
-- Lucide React (Icons)
-- Vite
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## How to Run
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+## Learn More
 
-2. Start development server:
-   ```bash
-   npm run dev
-   ```
+To learn more about Next.js, take a look at the following resources:
 
-3. Open your browser at the provided URL (usually `http://localhost:5173`).
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Usage Flow
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-1. **Upload**: Click "Select Image" or the upload card to simulate an image upload.
-2. **Loading**: Watch the loading animation (simulated for 3 seconds).
-3. **Editor**: Drag elements from the sidebar onto the canvas. Switch tabs to see different items.
-4. **Export**: Once in the editor, the "Export PDF" button in the top bar becomes enabled.
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
