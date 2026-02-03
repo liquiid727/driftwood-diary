@@ -26,3 +26,11 @@ export function loadLayout(id: string): Layout | null {
   const raw = window.localStorage.getItem(`pws:layout:${id}`);
   return raw ? (JSON.parse(raw) as Layout) : null;
 }
+
+export function deleteLayout(id: string) {
+  if (typeof window === "undefined") return;
+  const ids = new Set(loadLayoutIndex());
+  ids.delete(id);
+  saveLayoutIndex(Array.from(ids));
+  window.localStorage.removeItem(`pws:layout:${id}`);
+}

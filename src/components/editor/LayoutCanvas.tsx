@@ -66,6 +66,22 @@ function buildMask(region: Region) {
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
+const REGION_TINTS = [
+  "rgba(255, 99, 132, 0.18)",
+  "rgba(54, 162, 235, 0.18)",
+  "rgba(255, 206, 86, 0.2)",
+  "rgba(75, 192, 192, 0.18)",
+  "rgba(153, 102, 255, 0.18)",
+  "rgba(255, 159, 64, 0.2)",
+  "rgba(46, 204, 113, 0.18)",
+  "rgba(231, 76, 60, 0.18)",
+];
+
+function regionTint(order: number) {
+  if (!Number.isFinite(order)) return "rgba(255, 255, 255, 0.12)";
+  return REGION_TINTS[(order - 1) % REGION_TINTS.length];
+}
+
 export default function LayoutCanvas({
   layout,
   regionImages,
@@ -145,6 +161,8 @@ export default function LayoutCanvas({
           const isSelected = region?.id && selectedRegionId === region.id;
           const isDragging = Boolean(region?.id && draggingId === region.id);
           const showOrder = region && regionTopLeft.get(region.id) === key;
+          const hasImage = Boolean(region && regionImages[region.id]);
+          const tint = region ? regionTint(region.order) : undefined;
           return (
             <button
               key={key}
@@ -155,8 +173,12 @@ export default function LayoutCanvas({
                     : "border-rose/40 bg-white/70 text-rose"
                   : "border-white/60 bg-white/50 text-ink/20"
               }`}
+              style={tint ? { backgroundColor: tint } : undefined}
               onClick={() => {
                 if (region) onSelectRegion?.(region.id);
+              }}
+              onDoubleClick={() => {
+                if (region) onPickImage(region.id);
               }}
               onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => {
@@ -169,6 +191,11 @@ export default function LayoutCanvas({
               {showLabels && showOrder ? (
                 <span className="absolute left-1 top-1 rounded-full bg-white/80 px-2 py-0.5 text-[10px] text-rose">
                   {region.order}
+                </span>
+              ) : null}
+              {showLabels && showOrder && !hasImage ? (
+                <span className="absolute bottom-1 right-1 rounded-full bg-white/80 px-2 py-0.5 text-[10px] text-ink/50">
+                  双击上传
                 </span>
               ) : null}
               {showLabels && isDragging ? (
@@ -198,18 +225,23 @@ export default function LayoutCanvas({
           const colEnd = box.maxX + 2;
           const rowStart = box.minY + 1;
           const rowEnd = box.maxY + 2;
+          const hasImage = Boolean(image);
+          const tint = regionTint(region.order);
           return (
             <button
               key={`overlay-${region.id}`}
-              className={`motion-apple-fast pointer-events-auto z-10 rounded-2xl border ${
+              className={`motion-apple-fast z-10 rounded-2xl border ${
                 isSelected
                   ? "border-sky shadow-[0_0_0_2px_rgba(6,182,212,0.35)]"
                   : "border-white/40"
-              } ${isDragging ? "cursor-grabbing opacity-90" : "cursor-grab"}`}
+              } ${hasImage ? "pointer-events-auto" : "pointer-events-none"} ${
+                isDragging ? "cursor-grabbing opacity-90" : "cursor-grab"
+              }`}
               style={{
                 gridColumn: `${colStart} / ${colEnd}`,
                 gridRow: `${rowStart} / ${rowEnd}`,
                 backgroundImage: image ? `url(${image})` : undefined,
+                backgroundColor: image ? undefined : tint,
                 backgroundSize: `${transform.scale * 100}%`,
                 backgroundPosition: `calc(50% + ${transform.offsetX}px) calc(50% + ${transform.offsetY}px)`,
                 transform: `rotate(${transform.rotate}deg)`,
@@ -277,11 +309,7 @@ export default function LayoutCanvas({
               }}
               aria-label={`region-${region.id}`}
             >
-              {!image && showLabels ? (
-                <span className="flex h-full w-full items-center justify-center rounded-2xl bg-white/50 text-xs text-ink/50">
-                  双击上传
-                </span>
-              ) : null}
+              {!image && showLabels ? <span className="sr-only">双击上传</span> : null}
             </button>
           );
         })}

@@ -85,7 +85,10 @@ export default function HomePage() {
               让用户在 10 分钟内完成一套有意义的照片墙。
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <LinkButton href="/editor">进入编辑器</LinkButton>
+              <LinkButton href="/editor">开始创造</LinkButton>
+              <LinkButton variant="secondary" href="/builder">
+                随心创造
+              </LinkButton>
               <LinkButton variant="secondary" href="/templates">
                 浏览模板库
               </LinkButton>
@@ -255,7 +258,7 @@ export default function HomePage() {
             进入编辑器，选择主题或创建自定义布局，马上开始你的第一本照片墙。
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <LinkButton href="/editor">开始制作</LinkButton>
+            <LinkButton href="/editor">开始创造</LinkButton>
             <LinkButton variant="secondary" href="/templates">
               查看模板
             </LinkButton>

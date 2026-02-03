@@ -24,6 +24,14 @@
 .DS_Store
 *.pem
 
+# ignore dotfiles (except this file)
+.*
+!.gitignore
+
+# docs
+AGENTS.md
+agents.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

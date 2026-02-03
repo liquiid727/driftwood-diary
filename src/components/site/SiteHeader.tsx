@@ -4,8 +4,8 @@ import ThemeSwitcher from "@/components/ui/ThemeSwitcher";
 
 const navItems = [
   { href: "/templates", label: "模板工坊" },
-  { href: "/editor", label: "开始制作" },
-  { href: "/export", label: "导出预览" },
+  { href: "/editor", label: "开始创造" },
+  { href: "/builder", label: "随心创造" },
 ];
 
 export default function SiteHeader() {

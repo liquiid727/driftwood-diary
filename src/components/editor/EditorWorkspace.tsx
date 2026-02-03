@@ -1,10 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import LayoutBuilder from "@/components/layout-builder/LayoutBuilder";
 import LayoutCanvas from "@/components/editor/LayoutCanvas";
 import ImageAdjustPanel from "@/components/editor/ImageAdjustPanel";
 import { Card } from "@/components/ui/Card";
+import { LinkButton } from "@/components/ui/Button";
+import ThemeSwitcher from "@/components/ui/ThemeSwitcher";
 import type { Layout, Room } from "@/types/core";
 import { loadLayout, loadLayoutIndex } from "@/lib/storage/layoutStore";
 import { templateLayouts } from "@/data/templates";
@@ -71,6 +72,7 @@ export default function EditorWorkspace() {
   const [pageTagFont, setPageTagFont] = useState<"sans" | "serif" | "mono">("sans");
   const [watermarkText, setWatermarkText] = useState("Photo Wall Studio");
   const [badgeThemeColor, setBadgeThemeColor] = useState(true);
+  const [activeTab, setActiveTab] = useState<"templates" | "theme" | "export">("templates");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const pendingRegionRef = useRef<string | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -95,6 +97,21 @@ export default function EditorWorkspace() {
   useEffect(() => {
     setLayouts(loadedLayouts);
   }, [loadedLayouts]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const preselectId = window.localStorage.getItem("pws:layout-preselect");
+    if (!preselectId) return;
+    const target =
+      layouts.find((layout) => layout.id === preselectId) ??
+      templateLayouts.find((layout) => layout.id === preselectId) ??
+      null;
+    if (target) {
+      setSelectedLayout(target);
+      setSelectedKey(`saved:${target.id}`);
+    }
+    window.localStorage.removeItem("pws:layout-preselect");
+  }, [layouts]);
 
   const loadedRooms = useMemo(() => {
     if (typeof window === "undefined") return [];
@@ -608,194 +625,468 @@ export default function EditorWorkspace() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-      <div className="flex flex-col gap-4">
-        <Card className="flex flex-col gap-4">
-          <h2 className="text-sm font-semibold text-ink/80">模板布局</h2>
-          <div className="flex flex-col gap-2">
-            {templateLayouts.map((layout) => (
-              <button
-                key={layout.id}
-                className={`rounded-xl px-3 py-2 text-left text-sm motion-apple-fast ${
-                  selectedKey === `tpl:${layout.id}`
-                    ? "bg-rose/20 text-rose"
-                    : "bg-white/70 text-ink/70 hover:text-ink"
-                }`}
-                onClick={() => handleTemplateSelect(layout)}
-              >
-                {layout.name}
-              </button>
-              ))}
+      <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:h-fit">
+        <Card className="flex flex-col gap-2">
+          <div>
+            <h2 className="text-sm font-semibold text-ink/80">开始创造</h2>
+            <p className="text-xs text-ink/60">工具与预览都在这里</p>
           </div>
+          <div className="flex flex-col gap-2">
+            <LinkButton variant="secondary" href="/">
+              回到首页
+            </LinkButton>
+            <LinkButton variant="secondary" href="/templates">
+              模板工坊
+            </LinkButton>
+            <LinkButton href="/builder">随心创造</LinkButton>
+          </div>
+        </Card>
+        <div className="flex flex-wrap gap-2 rounded-full border border-white/70 bg-white/85 p-1 text-xs font-semibold text-ink/60 shadow-[0_10px_26px_rgba(15,23,42,0.08)]">
           <button
-            className="rounded-full bg-rose px-4 py-2 text-xs font-semibold text-white motion-apple-fast hover:-translate-y-0.5"
-            onClick={() => {
-              if (activeLayout) createRoomFromLayout(activeLayout);
-            }}
+            type="button"
+            onClick={() => setActiveTab("templates")}
+            className={`motion-apple-fast rounded-full px-3 py-1 ${
+              activeTab === "templates" ? "bg-rose/20 text-rose" : "hover:text-ink"
+            }`}
           >
-            生成 Room
+            模板/布局
           </button>
-        </Card>
+          <button
+            type="button"
+            onClick={() => setActiveTab("theme")}
+            className={`motion-apple-fast rounded-full px-3 py-1 ${
+              activeTab === "theme" ? "bg-sky/20 text-sky" : "hover:text-ink"
+            }`}
+          >
+            主题
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("export")}
+            className={`motion-apple-fast rounded-full px-3 py-1 ${
+              activeTab === "export" ? "bg-rose/15 text-rose" : "hover:text-ink"
+            }`}
+          >
+            导出
+          </button>
+        </div>
 
-        <Card className="flex flex-col gap-4">
-          <h2 className="text-sm font-semibold text-ink/80">我的布局</h2>
-          {layouts.length === 0 ? (
-            <p className="text-xs text-ink/60">还没有保存的布局。</p>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {layouts.map((layout) => (
-                <button
-                  key={layout.id}
-                  className={`rounded-xl px-3 py-2 text-left text-sm motion-apple-fast ${
-                    selectedKey === `saved:${layout.id}`
-                      ? "bg-sky/20 text-sky"
-                      : "bg-white/70 text-ink/70 hover:text-ink"
-                  }`}
-                  onClick={() => {
-                    setSelectedLayout(layout);
-                    setSelectedKey(`saved:${layout.id}`);
-                  }}
-                >
-                  {layout.name}
-                </button>
-              ))}
-            </div>
-          )}
-        </Card>
-
-        <Card className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold text-ink/80">我的 Room</h2>
-          {rooms.length === 0 ? (
-            <p className="text-xs text-ink/60">还没有保存的 Room。</p>
-          ) : (
-            <div className="grid gap-2 text-xs text-ink/60">
-              {rooms.slice(0, 5).map((room) => {
-                const coverPage =
-                  room.pages.find((page) => page.id === room.coverPageId) ?? room.pages[0];
-                return (
-                <button
-                  key={room.id}
-                  onClick={() => openRoom(room)}
-                  className={`rounded-xl px-3 py-2 text-left motion-apple-fast ${
-                    selectedRoomId === room.id
-                      ? "bg-sky/20 text-sky"
-                      : "bg-white/70 text-ink/70 hover:text-ink"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 overflow-hidden rounded-xl bg-white/70">
-                      {coverPage?.thumbnail ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={coverPage.thumbnail}
-                          alt={`${room.name} cover`}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-[10px] text-ink/40">
-                          No Img
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{room.name}</p>
-                      <p>{room.pages.length} 页 · {room.themeId}</p>
-                    </div>
-                  </div>
-                </button>
-              )})}
-            </div>
-          )}
-          {activeRoom ? (
-            <div className="mt-2 flex flex-col gap-2">
-              <div className="flex flex-wrap gap-2">
-            {activeRoom.pages.map((page, index) => (
-              <div key={page.id} className="flex items-center gap-2">
-                <div
-                  className={`h-5 w-1 rounded-full ${
-                    dragOverIndex === index ? "bg-sky/50" : "bg-transparent"
-                  }`}
-                />
-                <button
-                  draggable
-                  onDragStart={(event) => {
-                    setDraggingPageIndex(index);
-                    event.dataTransfer.setData("text/plain", String(index));
-                  }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    setDragOverIndex(index);
-                    if (event.dataTransfer.types.includes("application/x-cover-badge")) {
-                      event.dataTransfer.dropEffect = "copy";
-                    }
-                  }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    if (event.dataTransfer.types.includes("application/x-cover-badge")) {
-                      setRoomCover(page.id);
-                    } else {
-                      const from = Number(event.dataTransfer.getData("text/plain"));
-                      movePage(from, index);
-                    }
-                    setDraggingPageIndex(null);
-                    setDragOverIndex(null);
-                  }}
-                  onDragEnd={() => {
-                    setDraggingPageIndex(null);
-                    setDragOverIndex(null);
-                  }}
-                  onClick={() => {
-                    setCurrentPageIndex(index);
-                    setSelectedRegionId(null);
-                  }}
-                  className={`rounded-full px-3 py-1 text-xs motion-apple-fast ${
-                    currentPageIndex === index
-                      ? "bg-rose/20 text-rose"
-                      : draggingPageIndex === index
-                        ? "bg-sky/20 text-sky"
-                        : dragOverIndex === index
-                          ? "bg-sky/10 text-sky"
-                          : "bg-white/70 text-ink/70 hover:text-ink"
-                  } ${draggingPageIndex === index ? "scale-105 -translate-y-0.5 shadow" : "motion-apple-fast"} ${
-                    dragOverIndex === index ? "ring-1 ring-sky/40" : ""
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    {page.name ?? `第${index + 1}页`}
-                    {activeRoom.coverPageId === page.id ? (
-                      <span className="rounded-full bg-rose/20 px-2 py-0.5 text-[10px] text-rose">
-                        封面
-                      </span>
-                    ) : null}
-                  </span>
-                </button>
-              </div>
-            ))}
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  draggable
-                  onDragStart={(event) => {
-                    event.dataTransfer.setData("application/x-cover-badge", "cover");
-                    event.dataTransfer.effectAllowed = "copy";
-                  }}
-                  className="rounded-full bg-rose/20 px-3 py-1 text-xs text-rose"
-                >
-                  拖拽封面标记
-                </span>
-                <span className="text-[10px] text-ink/50">拖到页签上设置封面</span>
+        {activeTab === "templates" ? (
+          <>
+            <Card className="flex flex-col gap-4">
+              <h2 className="text-sm font-semibold text-ink/80">模板布局</h2>
+              <div className="flex flex-col gap-2">
+                {templateLayouts.map((layout) => (
+                  <button
+                    key={layout.id}
+                    className={`rounded-xl px-3 py-2 text-left text-sm motion-apple-fast ${
+                      selectedKey === `tpl:${layout.id}`
+                        ? "bg-rose/20 text-rose"
+                        : "bg-white/70 text-ink/70 hover:text-ink"
+                    }`}
+                    onClick={() => handleTemplateSelect(layout)}
+                  >
+                    {layout.name}
+                  </button>
+                ))}
               </div>
               <button
-                onClick={addPageToRoom}
                 className="rounded-full bg-rose px-4 py-2 text-xs font-semibold text-white motion-apple-fast hover:-translate-y-0.5"
+                onClick={() => {
+                  if (activeLayout) createRoomFromLayout(activeLayout);
+                }}
               >
-                新增页面
+                生成 Room
               </button>
+            </Card>
+
+            <Card className="flex flex-col gap-4">
+              <h2 className="text-sm font-semibold text-ink/80">我的布局</h2>
+              {layouts.length === 0 ? (
+                <p className="text-xs text-ink/60">还没有保存的布局。</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {layouts.map((layout) => (
+                    <button
+                      key={layout.id}
+                      className={`rounded-xl px-3 py-2 text-left text-sm motion-apple-fast ${
+                        selectedKey === `saved:${layout.id}`
+                          ? "bg-sky/20 text-sky"
+                          : "bg-white/70 text-ink/70 hover:text-ink"
+                      }`}
+                      onClick={() => {
+                        setSelectedLayout(layout);
+                        setSelectedKey(`saved:${layout.id}`);
+                      }}
+                    >
+                      {layout.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </Card>
+
+            <Card className="flex flex-col gap-3">
+              <h2 className="text-sm font-semibold text-ink/80">我的 Room</h2>
+              {rooms.length === 0 ? (
+                <p className="text-xs text-ink/60">还没有保存的 Room。</p>
+              ) : (
+                <div className="grid gap-2 text-xs text-ink/60">
+                  {rooms.slice(0, 5).map((room) => {
+                    const coverPage =
+                      room.pages.find((page) => page.id === room.coverPageId) ?? room.pages[0];
+                    return (
+                      <button
+                        key={room.id}
+                        onClick={() => openRoom(room)}
+                        className={`rounded-xl px-3 py-2 text-left motion-apple-fast ${
+                          selectedRoomId === room.id
+                            ? "bg-sky/20 text-sky"
+                            : "bg-white/70 text-ink/70 hover:text-ink"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-12 w-12 overflow-hidden rounded-xl bg-white/70">
+                            {coverPage?.thumbnail ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={coverPage.thumbnail}
+                                alt={`${room.name} cover`}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center text-[10px] text-ink/40">
+                                No Img
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-semibold">{room.name}</p>
+                            <p>
+                              {room.pages.length} 页 · {room.themeId}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {activeRoom ? (
+                <div className="mt-2 flex flex-col gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {activeRoom.pages.map((page, index) => (
+                      <div key={page.id} className="flex items-center gap-2">
+                        <div
+                          className={`h-5 w-1 rounded-full ${
+                            dragOverIndex === index ? "bg-sky/50" : "bg-transparent"
+                          }`}
+                        />
+                        <button
+                          draggable
+                          onDragStart={(event) => {
+                            setDraggingPageIndex(index);
+                            event.dataTransfer.setData("text/plain", String(index));
+                          }}
+                          onDragOver={(event) => {
+                            event.preventDefault();
+                            setDragOverIndex(index);
+                            if (event.dataTransfer.types.includes("application/x-cover-badge")) {
+                              event.dataTransfer.dropEffect = "copy";
+                            }
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            if (event.dataTransfer.types.includes("application/x-cover-badge")) {
+                              setRoomCover(page.id);
+                            } else {
+                              const from = Number(event.dataTransfer.getData("text/plain"));
+                              movePage(from, index);
+                            }
+                            setDraggingPageIndex(null);
+                            setDragOverIndex(null);
+                          }}
+                          onDragEnd={() => {
+                            setDraggingPageIndex(null);
+                            setDragOverIndex(null);
+                          }}
+                          onClick={() => {
+                            setCurrentPageIndex(index);
+                            setSelectedRegionId(null);
+                          }}
+                          className={`rounded-full px-3 py-1 text-xs motion-apple-fast ${
+                            currentPageIndex === index
+                              ? "bg-rose/20 text-rose"
+                              : draggingPageIndex === index
+                                ? "bg-sky/20 text-sky"
+                                : dragOverIndex === index
+                                  ? "bg-sky/10 text-sky"
+                                  : "bg-white/70 text-ink/70 hover:text-ink"
+                          } ${
+                            draggingPageIndex === index
+                              ? "scale-105 -translate-y-0.5 shadow"
+                              : "motion-apple-fast"
+                          } ${dragOverIndex === index ? "ring-1 ring-sky/40" : ""}`}
+                        >
+                          <span className="flex items-center gap-2">
+                            {page.name ?? `第${index + 1}页`}
+                            {activeRoom.coverPageId === page.id ? (
+                              <span className="rounded-full bg-rose/20 px-2 py-0.5 text-[10px] text-rose">
+                                封面
+                              </span>
+                            ) : null}
+                          </span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.setData("application/x-cover-badge", "cover");
+                        event.dataTransfer.effectAllowed = "copy";
+                      }}
+                      className="rounded-full bg-rose/20 px-3 py-1 text-xs text-rose"
+                    >
+                      拖拽封面标记
+                    </span>
+                    <span className="text-[10px] text-ink/50">拖到页签上设置封面</span>
+                  </div>
+                  <button
+                    onClick={addPageToRoom}
+                    className="rounded-full bg-rose px-4 py-2 text-xs font-semibold text-white motion-apple-fast hover:-translate-y-0.5"
+                  >
+                    新增页面
+                  </button>
+                </div>
+              ) : null}
+            </Card>
+          </>
+        ) : null}
+
+        {activeTab === "theme" ? (
+          <Card className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-ink/80">主题服务</h3>
+              <ThemeSwitcher
+                value={activeThemeId}
+                onChange={setActiveThemeId}
+                showLabel={false}
+              />
             </div>
-          ) : null}
-        </Card>
+            <div className="flex flex-col gap-2 text-xs text-ink/60">
+              <div>
+                <p className="font-semibold text-ink/70">一键服务</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {themes[activeThemeId].services.map((item) => (
+                    <span key={item} className="rounded-full bg-white/70 px-3 py-1">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold text-ink/70">贴纸关键词</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {themes[activeThemeId].stickerKeywords.map((item) => (
+                    <span key={item} className="rounded-full bg-white/70 px-3 py-1">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-semibold text-ink/70">推荐页</p>
+                <ul className="mt-2 grid gap-1">
+                  {themes[activeThemeId].pageGuides.map((item) => (
+                    <li key={item} className="rounded-lg bg-white/60 px-3 py-1">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Card>
+        ) : null}
+
+        {activeTab === "export" ? (
+          <Card className="motion-apple-slow flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-ink/80">导出 PNG</h3>
+              <select
+                className="rounded-full bg-white/70 px-3 py-1 text-xs text-ink/70"
+                value={exportScale}
+                onChange={(event) => setExportScale(Number(event.target.value))}
+              >
+                {exportPresets.map((preset) => (
+                  <option key={preset.id} value={preset.scale}>
+                    {preset.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              导出水印
+              <input
+                type="checkbox"
+                checked={includeWatermark}
+                onChange={(event) => setIncludeWatermark(event.target.checked)}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              导出页码标签
+              <input
+                type="checkbox"
+                checked={includePageTag}
+                onChange={(event) => setIncludePageTag(event.target.checked)}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码位置
+              <select
+                className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
+                value={pageTagPosition}
+                onChange={(event) => setPageTagPosition(event.target.value as typeof pageTagPosition)}
+              >
+                <option value="bl">左下</option>
+                <option value="br">右下</option>
+                <option value="tl">左上</option>
+                <option value="tr">右上</option>
+              </select>
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码样式
+              <select
+                className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
+                value={pageTagTone}
+                onChange={(event) => setPageTagTone(event.target.value as typeof pageTagTone)}
+              >
+                <option value="light">浅色</option>
+                <option value="dark">深色</option>
+              </select>
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码字体
+              <select
+                className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
+                value={pageTagFont}
+                onChange={(event) => setPageTagFont(event.target.value as typeof pageTagFont)}
+              >
+                <option value="sans">Sans</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码大小
+              <input
+                type="range"
+                min={8}
+                max={16}
+                step={1}
+                value={pageTagSize}
+                onChange={(event) => setPageTagSize(Number(event.target.value))}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码透明度
+              <input
+                type="range"
+                min={0.4}
+                max={1}
+                step={0.05}
+                value={pageTagOpacity}
+                onChange={(event) => setPageTagOpacity(Number(event.target.value))}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              页码内边距
+              <input
+                type="range"
+                min={6}
+                max={20}
+                step={1}
+                value={pageTagPadding}
+                onChange={(event) => setPageTagPadding(Number(event.target.value))}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              导出主题标签
+              <input
+                type="checkbox"
+                checked={includeThemeTag}
+                onChange={(event) => setIncludeThemeTag(event.target.checked)}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              主题色徽章
+              <input
+                type="checkbox"
+                checked={badgeThemeColor}
+                onChange={(event) => setBadgeThemeColor(event.target.checked)}
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
+              水印文本
+              <input
+                className="ml-2 flex-1 rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
+                value={watermarkText}
+                onChange={(event) => setWatermarkText(event.target.value)}
+              />
+            </label>
+            <div className="grid gap-2">
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="rounded-full bg-rose px-4 py-2 text-xs font-semibold text-white motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
+              >
+                {exporting ? "导出中..." : "导出 PNG"}
+              </button>
+              <button
+                onClick={handleExportZip}
+                disabled={exporting}
+                className="rounded-full bg-white/80 px-4 py-2 text-xs font-semibold text-ink/70 motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
+              >
+                导出当前页 zip
+              </button>
+              <button
+                onClick={handleExportRoomZip}
+                disabled={exporting}
+                className="rounded-full bg-white/80 px-4 py-2 text-xs font-semibold text-ink/70 motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
+              >
+                导出 Room zip
+              </button>
+              {exporting ? (
+                <div className="h-1 w-full overflow-hidden rounded-full bg-ink/10">
+                  <div className="loading-bar h-full w-1/3 rounded-full bg-rose/70" />
+                </div>
+              ) : null}
+              {exportMessage ? (
+                <p className="text-xs text-ink/60">{exportMessage}</p>
+              ) : null}
+            </div>
+          </Card>
+        ) : null}
       </div>
 
       <div className="relative flex flex-col gap-6">
+        <Card className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-ink/40">Preview</p>
+            <h3 className="text-lg font-semibold text-ink">预览画布</h3>
+          </div>
+          <div className="text-xs text-ink/60">
+            {activeRoom ? (
+              <span>
+                {activeRoom.name} · {activeRoom.pages.length} 页 ·{" "}
+                {activePage?.name ?? `第${currentPageIndex + 1}页`}
+              </span>
+            ) : (
+              <span>请选择或创建一个 Room</span>
+            )}
+          </div>
+        </Card>
         <LayoutCanvas
           layout={activeLayout}
           regionImages={pageImages}
@@ -953,212 +1244,7 @@ export default function EditorWorkspace() {
             </div>
           </Card>
 
-          <Card className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-ink/80">主题服务</h3>
-              <select
-                className="rounded-full bg-white/70 px-3 py-1 text-xs text-ink/70"
-                value={activeThemeId}
-                onChange={(event) => setActiveThemeId(event.target.value as keyof typeof themes)}
-              >
-                <option value="forest">森系岛屿</option>
-                <option value="graduation">青春毕业季</option>
-                <option value="springFestival">中国新年</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2 text-xs text-ink/60">
-              <div>
-                <p className="font-semibold text-ink/70">一键服务</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {themes[activeThemeId].services.map((item) => (
-                    <span key={item} className="rounded-full bg-white/70 px-3 py-1">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold text-ink/70">贴纸关键词</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {themes[activeThemeId].stickerKeywords.map((item) => (
-                    <span key={item} className="rounded-full bg-white/70 px-3 py-1">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold text-ink/70">推荐页</p>
-                <ul className="mt-2 grid gap-1">
-                  {themes[activeThemeId].pageGuides.map((item) => (
-                    <li key={item} className="rounded-lg bg-white/60 px-3 py-1">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Card>
         </div>
-
-        <Card className="motion-apple-slow flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink/80">导出 PNG</h3>
-            <select
-              className="rounded-full bg-white/70 px-3 py-1 text-xs text-ink/70"
-              value={exportScale}
-              onChange={(event) => setExportScale(Number(event.target.value))}
-            >
-              {exportPresets.map((preset) => (
-                <option key={preset.id} value={preset.scale}>
-                  {preset.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            导出水印
-            <input
-              type="checkbox"
-              checked={includeWatermark}
-              onChange={(event) => setIncludeWatermark(event.target.checked)}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            导出页码标签
-            <input
-              type="checkbox"
-              checked={includePageTag}
-              onChange={(event) => setIncludePageTag(event.target.checked)}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码位置
-            <select
-              className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
-              value={pageTagPosition}
-              onChange={(event) => setPageTagPosition(event.target.value as typeof pageTagPosition)}
-            >
-              <option value="bl">左下</option>
-              <option value="br">右下</option>
-              <option value="tl">左上</option>
-              <option value="tr">右上</option>
-            </select>
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码样式
-            <select
-              className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
-              value={pageTagTone}
-              onChange={(event) => setPageTagTone(event.target.value as typeof pageTagTone)}
-            >
-              <option value="light">浅色</option>
-              <option value="dark">深色</option>
-            </select>
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码字体
-            <select
-              className="rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
-              value={pageTagFont}
-              onChange={(event) => setPageTagFont(event.target.value as typeof pageTagFont)}
-            >
-              <option value="sans">Sans</option>
-              <option value="serif">Serif</option>
-              <option value="mono">Mono</option>
-            </select>
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码大小
-            <input
-              type="range"
-              min={8}
-              max={16}
-              step={1}
-              value={pageTagSize}
-              onChange={(event) => setPageTagSize(Number(event.target.value))}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码透明度
-            <input
-              type="range"
-              min={0.4}
-              max={1}
-              step={0.05}
-              value={pageTagOpacity}
-              onChange={(event) => setPageTagOpacity(Number(event.target.value))}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            页码内边距
-            <input
-              type="range"
-              min={6}
-              max={20}
-              step={1}
-              value={pageTagPadding}
-              onChange={(event) => setPageTagPadding(Number(event.target.value))}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            导出主题标签
-            <input
-              type="checkbox"
-              checked={includeThemeTag}
-              onChange={(event) => setIncludeThemeTag(event.target.checked)}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            主题色徽章
-            <input
-              type="checkbox"
-              checked={badgeThemeColor}
-              onChange={(event) => setBadgeThemeColor(event.target.checked)}
-            />
-          </label>
-          <label className="flex items-center justify-between rounded-full bg-white/70 px-4 py-2 text-xs text-ink/70">
-            水印文本
-            <input
-              className="ml-2 flex-1 rounded-full bg-white/80 px-2 py-1 text-xs text-ink/70"
-              value={watermarkText}
-              onChange={(event) => setWatermarkText(event.target.value)}
-            />
-          </label>
-          <div className="grid gap-2">
-            <button
-              onClick={handleExport}
-              disabled={exporting}
-              className="rounded-full bg-rose px-4 py-2 text-xs font-semibold text-white motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
-            >
-              {exporting ? "导出中..." : "导出 PNG"}
-            </button>
-            <button
-              onClick={handleExportZip}
-              disabled={exporting}
-              className="rounded-full bg-white/80 px-4 py-2 text-xs font-semibold text-ink/70 motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
-            >
-              导出当前页 zip
-            </button>
-            <button
-              onClick={handleExportRoomZip}
-              disabled={exporting}
-              className="rounded-full bg-white/80 px-4 py-2 text-xs font-semibold text-ink/70 motion-apple-fast hover:-translate-y-0.5 disabled:opacity-60"
-            >
-              导出 Room zip
-            </button>
-            {exporting ? (
-              <div className="h-1 w-full overflow-hidden rounded-full bg-ink/10">
-                <div className="loading-bar h-full w-1/3 rounded-full bg-rose/70" />
-              </div>
-            ) : null}
-            {exportMessage ? (
-              <p className="text-xs text-ink/60">{exportMessage}</p>
-            ) : null}
-          </div>
-        </Card>
-
-        <LayoutBuilder onSave={handleLayoutSaved} />
       </div>
 
       <div className="pointer-events-none absolute -left-[9999px] top-0 opacity-0">
