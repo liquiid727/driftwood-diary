@@ -1,0 +1,41 @@
+<view class="container" animation="{{enterAnim}}">
+  <view class="section">
+    <view class="section-title">导入照片</view>
+    <view class="section-sub">按“照片有机整合规则”自动分组、控密度、去重。</view>
+    <button class="btn-primary" bindtap="onChoosePhotos">选择照片</button>
+  </view>
+
+  <view class="section">
+    <view class="section-title">已选照片（{{photos.length}}）</view>
+    <view class="thumbs">
+      <block wx:for="{{photos}}" wx:key="id">
+        <image class="thumb" mode="aspectFill" src="{{item.path}}" />
+      </block>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">音乐（3 首可选）</view>
+    <radio-group bindchange="onMusicChange">
+      <block wx:for="{{tracks}}" wx:key="trackId">
+        <label class="radio-item">
+          <radio value="{{item.trackId}}" checked="{{item.trackId===selectedTrackId}}" />
+          <text class="radio-text">{{item.title}}</text>
+        </label>
+      </block>
+    </radio-group>
+    <view class="music-actions">
+      <button class="btn-secondary" bindtap="onToggleMusic">{{musicEnabled ? "暂停音乐" : "开启音乐"}}</button>
+    </view>
+  </view>
+
+  <view class="section">
+    <button class="btn-primary" bindtap="onPreview">预览（H5 播放器）</button>
+  </view>
+
+  <view class="section">
+    <view class="section-title">发布</view>
+    <view class="section-sub">{{publishText}}</view>
+    <button class="btn-primary" bindtap="onPublish" disabled="{{publishing || photos.length===0}}">{{publishing ? "发布中..." : "生成并发布"}}</button>
+  </view>
+</view>

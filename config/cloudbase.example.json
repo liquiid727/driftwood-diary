@@ -1,0 +1,12 @@
+{
+  "envId": "your-cloudbase-env-id",
+  "doubao": {
+    "accessKey": "set-in-cloudbase-env",
+    "secretKey": "set-in-cloudbase-env",
+    "host": "set-in-cloudbase-env",
+    "region": "set-in-cloudbase-env",
+    "service": "set-in-cloudbase-env",
+    "apiPath": "/api/v3/chat/completions"
+  }
+}
+

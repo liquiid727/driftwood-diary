@@ -1,0 +1,18 @@
+<view class="container" animation="{{enterAnim}}">
+  <view class="hero">
+    <view class="hero-title">{{title}}</view>
+    <view class="hero-subtitle">{{subtitle}}</view>
+  </view>
+
+  <view class="grid">
+    <block wx:for="{{wall}}" wx:key="id">
+      <view class="tile">
+        <image class="tile-img" mode="aspectFill" src="{{item.url}}" />
+      </view>
+    </block>
+  </view>
+
+  <view class="actions">
+    <button class="btn-primary" bindtap="onStart">开始制作</button>
+  </view>
+</view>

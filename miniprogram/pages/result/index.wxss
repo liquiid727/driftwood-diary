@@ -1,0 +1,28 @@
+.card {
+  padding: 28rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.86);
+  border: 2rpx solid rgba(245, 197, 66, 0.26);
+  margin-top: 16rpx;
+}
+
+.title {
+  font-size: 44rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sub {
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  color: rgba(31, 26, 23, 0.7);
+  line-height: 1.4;
+}
+
+.actions {
+  margin-top: 28rpx;
+}
+
+.actions button + button {
+  margin-top: 14rpx;
+}

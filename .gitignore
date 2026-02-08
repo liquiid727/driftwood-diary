@@ -24,10 +24,6 @@
 .DS_Store
 *.pem
 
-# ignore dotfiles (except this file)
-.*
-!.gitignore
-
 # docs
 AGENTS.md
 agents.md

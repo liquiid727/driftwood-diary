@@ -1,0 +1,48 @@
+.section {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.82);
+  border: 2rpx solid rgba(245, 197, 66, 0.22);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.section-sub {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: rgba(31, 26, 23, 0.7);
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 16rpx;
+}
+
+.thumb {
+  width: 210rpx;
+  height: 210rpx;
+  border-radius: 14rpx;
+  background: rgba(245, 197, 66, 0.12);
+  margin-right: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 0;
+}
+
+.radio-text {
+  margin-left: 12rpx;
+  font-size: 28rpx;
+}
+
+.music-actions {
+  margin-top: 14rpx;
+}

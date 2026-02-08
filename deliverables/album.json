@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "albumId": "alb_2026_0001",
+  "themeId": "horseNewYear",
+  "title": "马年团圆照墙",
+  "subtitle": "灯火照归家，万事皆顺意",
+  "blessing": "愿你我新岁平安喜乐，所求皆如愿。",
+  "motionPreset": "T1",
+  "shareImg": "cloud://path/to/albums/alb_2026_0001/share/share-5x4.jpg",
+  "music": {
+    "trackId": "M2",
+    "title": "温暖弦乐钢琴",
+    "url": "https://cdn.example.com/albums/alb_2026_0001/audio/M2.mp3",
+    "defaultMuted": true
+  },
+  "pages": [
+    {
+      "pageId": "p001",
+      "pageType": "cover",
+      "layoutId": "cover-A",
+      "text": {
+        "title": "马年新春团圆",
+        "subtitle": "热热闹闹这一年",
+        "blessing": "愿你我新岁平安喜乐，所求皆如愿。"
+      },
+      "assets": [
+        {
+          "assetId": "a001",
+          "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a001.jpg",
+          "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a001.jpg"
+        }
+      ],
+      "decorations": [{ "type": "frame", "id": "couplet-top" }, { "type": "badge", "id": "fu-corner" }]
+    },
+    {
+      "pageId": "p002",
+      "pageType": "groupPhoto",
+      "layoutId": "group-hero",
+      "assets": [
+        {
+          "assetId": "a010",
+          "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a010.jpg",
+          "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a010.jpg"
+        },
+        {
+          "assetId": "a011",
+          "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a011.jpg",
+          "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a011.jpg"
+        }
+      ],
+      "decorations": [{ "type": "stamp", "id": "horse-seal" }]
+    },
+    {
+      "pageId": "p003",
+      "pageType": "dinner",
+      "layoutId": "grid-9",
+      "assets": [
+        { "assetId": "a020", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a020.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a020.jpg" },
+        { "assetId": "a021", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a021.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a021.jpg" },
+        { "assetId": "a022", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a022.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a022.jpg" },
+        { "assetId": "a023", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a023.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a023.jpg" },
+        { "assetId": "a024", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a024.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a024.jpg" },
+        { "assetId": "a025", "urlLarge": "https://cdn.example.com/albums/alb_2026_0001/images/large/a025.jpg", "urlThumb": "https://cdn.example.com/albums/alb_2026_0001/images/thumb/a025.jpg" }
+      ]
+    },
+    {
+      "pageId": "p004",
+      "pageType": "blank",
+      "layoutId": "blank-text",
+      "text": {
+        "title": "灯火与归途",
+        "paragraph": "新的一年，慢慢来，也好好爱。把热闹留给团圆，把温柔留给日常。"
+      },
+      "assets": []
+    }
+  ],
+  "updatedAt": 1738348800000
+}

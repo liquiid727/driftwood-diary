@@ -1,0 +1,11 @@
+<view class="container" animation="{{enterAnim}}">
+  <view class="card">
+    <view class="title">{{title}}</view>
+    <view class="sub">{{subtitle}}</view>
+  </view>
+
+  <view class="actions">
+    <button class="btn-primary" open-type="share" disabled="{{!shareImgUrl}}">{{shareImgUrl ? "分享给好友" : "生成分享图中..."}}</button>
+    <button class="btn-secondary" bindtap="onBackHome">回到首页</button>
+  </view>
+</view>

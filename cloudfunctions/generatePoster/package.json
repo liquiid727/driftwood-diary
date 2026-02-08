@@ -1,0 +1,13 @@
+{
+  "name": "generatePoster",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@horse/cf-shared": "file:../_shared",
+    "axios": "^1.6.8",
+    "joi": "^17.12.2",
+    "sharp": "^0.33.2",
+    "tcb-admin-node": "^1.23.0"
+  }
+}

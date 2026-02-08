@@ -1,0 +1,15 @@
+{
+  "themeId": "horseNewYear",
+  "version": "v1",
+  "previews": {
+    "templateCardA": "previews/preview-card.a.v1.jpg",
+    "templateCardB": "previews/preview-card.b.v1.jpg",
+    "templateCardC": "previews/preview-card.c.v1.jpg"
+  },
+  "music": [
+    { "trackId": "M1", "path": "music/M1.mp3" },
+    { "trackId": "M2", "path": "music/M2.mp3" },
+    { "trackId": "M3", "path": "music/M3.mp3" }
+  ]
+}
+

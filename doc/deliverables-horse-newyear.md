@@ -1,4 +1,4 @@
-# 交付物包：马年新年主题（小程序发布 H5 + 豆包 AI）
+# 交付物包：马年新年主题（小程序发布 H5 + 火山引擎 Doubao API（AK/SK 签名））
 
 > 目标：把 PRD 变成可直接执行的“设计/技术/运营”交付物。默认口径：小程序端创建与发布；发布产物为 H5 相册链接；微信内可打开播放；动效与音乐可用；AI 失败不阻断发布。
 
@@ -116,7 +116,7 @@
 
 **后端/云函数**
 1) 接收上传（多规格图片、音乐引用、album 草稿）
-2) 调用豆包 AI（或复用缓存），产出文案字段
+2) 调用火山引擎 Doubao API（AK/SK 签名）（或复用缓存），产出文案字段
 3) 内容安全（AI 文案审核 + 图片审核策略）
 4) 生成并固化 album.json（签名/版本/资源 URL）
 5) 返回 shareUrl、posterUrl
@@ -225,7 +225,7 @@
 | 名称 | 作用 | 入参（简） | 出参（简） | 失败降级 |
 |---|---|---|---|---|
 | CreateDraftAlbum | 创建草稿 | templateId, assetMeta[] | albumId | 本地草稿 |
-| GenerateAIText | 调用豆包生成文案 | albumId, pageSummaries, style | pageText[] | 回退模板默认文案 |
+| GenerateAIText | 调用火山引擎 Doubao API（AK/SK 签名）生成文案 | albumId, pageSummaries, style | pageText[] | 回退模板默认文案 |
 | UploadAssets | 上传多规格图片 | albumId, files[] | urls[] | 仅上传 thumb/medium |
 | PublishAlbum | 固化并发布 | albumId, selectedMusic, motionPreset | shareUrl, posterUrl | 发布为静态无音乐/无动效 |
 | GetAlbum | H5 拉取 | albumId | album.json | 返回缓存版本 |
@@ -291,4 +291,3 @@
 | AI 输出不稳定 | 内容翻车 | Prompt Pack + 输出校验 + 自动重试 + 默认文案回退 |
 | 主题跑偏/土味 | 影响审美定位 | 禁用词/长度约束/符号上限；克制风格强约束 |
 | 发布失败 | 主链路断 | 断点续传 + 重试 + 降级发布（无音乐/无动效） |
-

@@ -1,0 +1,26 @@
+{
+  "name": "horse-newyear-album-miniapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "lint": "eslint \"miniprogram/**/*.js\" \"cloudfunctions/**/*.js\" \"miniprogram-test/**/*.js\"",
+    "test": "jest --coverage",
+    "test:cloudfunctions": "jest --config jest.cloudfunctions.config.js --coverage",
+    "test:e2e": "jest --config jest.e2e.config.js"
+  },
+  "dependencies": {
+    "@horse/cf-shared": "file:cloudfunctions/_shared"
+  },
+  "devDependencies": {
+    "axios": "^1.6.8",
+    "eslint": "^8.57.0",
+    "eslint-config-weixin": "file:tools/eslint-config-weixin",
+    "joi": "^17.12.2",
+    "jest": "^29.7.0",
+    "miniprogram-automator": "^0.12.1",
+    "sharp": "^0.33.2",
+    "tcb-admin-node": "^1.23.0",
+    "tcb-testing-lib": "file:tools/tcb-testing-lib"
+  }
+}

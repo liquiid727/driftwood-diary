@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "albumId": "mock_album_001",
+  "themeId": "horseNewYear",
+  "title": "马年新春小相册",
+  "subtitle": "把这一年的热闹与温柔，都装进这里",
+  "blessing": "愿你新岁顺遂，心里有光，脚下有路。",
+  "motionPreset": "T1",
+  "shareImg": "",
+  "music": {
+    "trackId": "M1",
+    "title": "国风轻鼓点",
+    "url": "",
+    "defaultMuted": true
+  },
+  "pages": [
+    {
+      "pageId": "p001",
+      "pageType": "cover",
+      "layoutId": "cover-A",
+      "text": {
+        "title": "马年新春",
+        "subtitle": "一册团圆的记忆",
+        "blessing": "新年快乐，愿我们都更勇敢。"
+      },
+      "assets": [
+        {
+          "assetId": "a1",
+          "urlThumb": "",
+          "urlMedium": "",
+          "urlLarge": ""
+        }
+      ]
+    },
+    {
+      "pageId": "p002",
+      "pageType": "groupPhoto",
+      "layoutId": "group-hero",
+      "text": {
+        "paragraph": "灯火可亲，笑声入册。把最重要的人，放在最亮的一页。",
+        "captions": [
+          "这一刻值得记住",
+          "我们在一起就很好"
+        ]
+      },
+      "assets": [
+        { "assetId": "a2", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a3", "urlThumb": "", "urlMedium": "", "urlLarge": "" }
+      ]
+    },
+    {
+      "pageId": "p003",
+      "pageType": "dinner",
+      "layoutId": "grid-9",
+      "text": {
+        "paragraph": "年夜饭的香气和热气，藏在每一张小小的照片里。",
+        "tags": ["团圆", "烟火气", "热闹"]
+      },
+      "assets": [
+        { "assetId": "a4", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a5", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a6", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a7", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a8", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a9", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a10", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a11", "urlThumb": "", "urlMedium": "", "urlLarge": "" },
+        { "assetId": "a12", "urlThumb": "", "urlMedium": "", "urlLarge": "" }
+      ]
+    },
+    {
+      "pageId": "p004",
+      "pageType": "blank",
+      "layoutId": "blank-text",
+      "text": {
+        "title": "留一页给自己",
+        "paragraph": "愿你把喜欢的事做成习惯，把想见的人见成日常。"
+      },
+      "assets": []
+    },
+    {
+      "pageId": "p005",
+      "pageType": "greeting",
+      "layoutId": "blank-quote",
+      "text": {
+        "greeting": "马到成功，所愿皆成。",
+        "caption": "新的一年，继续向前。"
+      },
+      "assets": []
+    }
+  ]
+}

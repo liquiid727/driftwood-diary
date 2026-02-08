@@ -1,0 +1,31 @@
+{
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "horse-newyear-album",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "preloadBackgroundData": false,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "useIsolateContext": true,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "useCompilerModule": true,
+    "useUploadDaemon": true,
+    "lazyloadPlaceholderEnable": true,
+    "cloudbase": true
+  },
+  "cloudbaseRoot": "cloudfunctions/",
+  "cloudbaseEnvId": "your-cloudbase-env-id"
+}
+
